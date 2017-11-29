@@ -18,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(Boost REQUIRED COMPONENTS system filesystem thread)
 find_package(Eigen3 REQUIRED)
-find_package(PCL REQUIRED)
+find_package(PCL REQUIRED COMPONENTS common io)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/opt/ensenso/cmake")
 find_package(Ensenso REQUIRED)
 
@@ -47,11 +47,11 @@ generate_dynamic_reconfigure_options(
 )
 
 catkin_package(
-  INCLUDE_DIRS 
+  INCLUDE_DIRS
     include
-  LIBRARIES 
+  LIBRARIES
     ensenso_grabber
-  CATKIN_DEPENDS 
+  CATKIN_DEPENDS
     camera_info_manager
     cv_bridge
     eigen_conversions
@@ -71,7 +71,6 @@ include_directories(${ENSENSO_INCLUDE_DIRS})
 include_directories(${catkin_INCLUDE_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
-
 # Libraries
 add_library(ensenso_grabber src/ensenso_grabber.cpp)
 target_link_libraries(ensenso_grabber ${ENSENSO_LIBRARIES} ${PCL_LIBRARIES} ${catkin_LIBRARIES})
@@ -79,3 +78,35 @@ target_link_libraries(ensenso_grabber ${ENSENSO_LIBRARIES} ${PCL_LIBRARIES} ${ca
 add_executable(ensenso_driver src/ensenso_driver.cpp)
 add_dependencies(ensenso_driver ${catkin_EXPORTED_TARGETS})
 target_link_libraries(ensenso_driver ensenso_grabber ${PCL_LIBRARIES} ${catkin_LIBRARIES})
+
+# Install libraries
+install(
+  TARGETS
+    ensenso_grabber
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
+# Install nodes
+install(
+  TARGETS
+    ensenso_driver
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+# Install header files
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+)
+
+# Install scripts
+catkin_install_python(
+  PROGRAMS
+    scripts/install_driver.sh
+    scripts/snapshooter.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+# Install launch and config files
+install(
+  DIRECTORY launch config
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
