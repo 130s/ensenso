@@ -17,7 +17,7 @@ ROS package developed by [CRI Group](http://www.ntu.edu.sg/home/cuong/), [Nanyan
 ## Installation
 
 ### Requirements
-Run ``./scripts/install_driver.sh` to install the necessary proprietary software.
+Run `./scripts/install_driver.sh` to install the necessary proprietary software.
 
 As an alternative, manually download and install from [here](https://www.ensenso.com/support/sdk-download/):
 * Wibu CodeMeter runtime (Tested version: 6.40.2402)
